@@ -64,7 +64,7 @@ export default function StoreMap({
   const ordered = [...stores].sort((a, b) => Number(!!statuses[a.id]) - Number(!!statuses[b.id]));
 
   return (
-    <div className={`relative overflow-hidden rounded-xl border border-line ${className ?? "h-[55vh]"}`}>
+    <div className={`relative overflow-hidden rounded-xl border border-line ${className ?? "h-[40vh] min-h-64"}`}>
       <MapContainer
         center={BERLIN}
         zoom={11}

@@ -1,6 +1,6 @@
 "use client";
 
-import { LayoutDashboard, Map as MapIcon, Plus, UserRound } from "lucide-react";
+import { LayoutDashboard, Plus, UserRound } from "lucide-react";
 import type { Route } from "next";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -12,7 +12,6 @@ interface NavProps {
 
 function items(username: string | null) {
   return [
-    { href: "/" as Route, label: "Karte", icon: MapIcon, match: (p: string) => p === "/" || p.startsWith("/markt") },
     {
       href: (username ? `/besuch/neu` : "/anmelden") as Route,
       label: "Besuch",
@@ -65,7 +64,7 @@ export function MobileNav({ username }: NavProps) {
   const pathname = usePathname();
   return (
     <nav className="fixed inset-x-0 bottom-0 z-20 border-t border-line bg-surface/95 pb-[env(safe-area-inset-bottom)] backdrop-blur sm:hidden">
-      <div className="grid grid-cols-4">
+      <div className="grid grid-cols-3">
         {items(username).map(({ href, label, icon: Icon, match, primary }) => (
           <Link
             key={label}
