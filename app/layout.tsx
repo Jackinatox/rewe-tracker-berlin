@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/next";
 import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import { Toaster } from "sonner";
@@ -47,6 +48,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         </footer>
         <MobileNav username={username} />
         <Toaster position="top-center" richColors />
+        <Analytics />
       </body>
     </html>
   );
