@@ -47,7 +47,9 @@ export function StoreExplorer({
   const [expanded, setExpanded] = useState(false);
   const [focusId, setFocusId] = useState<string | null>(null);
   const [position, setPosition] = useState<LatLng | null>(null);
-  const [locating, setLocating] = useState(false);
+  // Start as "locating" so the first paint shows a loading state instead of the fallback.
+  const [locating, setLocating] = useState(true);
+  const [blocked, setBlocked] = useState(false);
 
   const withDistance = useMemo(
     () => stores.map((s) => ({ ...s, km: position ? haversineKm(position, s) : null })),
@@ -76,6 +78,7 @@ export function StoreExplorer({
 
   function locate(silent = false) {
     if (!navigator.geolocation) {
+      setLocating(false);
       if (!silent) toast.error("Dein Browser unterstützt keine Standortabfrage.");
       return;
     }
@@ -83,6 +86,7 @@ export function StoreExplorer({
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         setLocating(false);
+        setBlocked(false);
         const here = { lat: pos.coords.latitude, lng: pos.coords.longitude };
         setPosition(here);
         // Only fly the map there when the user asked; a silent locate on load shouldn't move it.
@@ -92,21 +96,34 @@ export function StoreExplorer({
           .sort((a, b) => haversineKm(here, a) - haversineKm(here, b))[0];
         if (first) setFocusId(first.id);
       },
-      () => {
+      (err) => {
         setLocating(false);
+        if (err.code === err.PERMISSION_DENIED) setBlocked(true);
         if (!silent) toast.error("Standort nicht verfügbar. Bitte Standortfreigabe erlauben.");
       },
       { enableHighAccuracy: true, timeout: 10_000 },
     );
   }
 
-  // Locate right away if the user already allowed it; otherwise wait for the button, so we don't prompt on load.
+  // The nearest store is the point of the page, so ask for the location on load (the browser prompts once).
+  // Re-locate if the user grants access later in the site settings.
   // biome-ignore lint/correctness/useExhaustiveDependencies: run once on mount
   useEffect(() => {
+    if (!navigator.permissions) return locate(true);
+    let status: PermissionStatus | undefined;
+    const onChange = () => status?.state === "granted" && locate(true);
     navigator.permissions
-      ?.query({ name: "geolocation" })
-      .then((p) => p.state === "granted" && locate(true))
-      .catch(() => {});
+      .query({ name: "geolocation" })
+      .then((p) => {
+        status = p;
+        p.addEventListener("change", onChange);
+        if (p.state === "denied") {
+          setBlocked(true);
+          setLocating(false);
+        } else locate(true);
+      })
+      .catch(() => locate(true));
+    return () => status?.removeEventListener("change", onChange);
   }, []);
 
   function showOnMap(id: string) {
@@ -170,6 +187,13 @@ export function StoreExplorer({
                 </div>
               )}
             </>
+          ) : locating ? (
+            <div className="flex items-center gap-3 text-sm">
+              <LocateFixed className="size-4 shrink-0 animate-pulse text-brand" />
+              <span className="text-ink-2">
+                {loggedIn ? "Suche deinen nächsten neuen Rewe…" : "Suche den nächsten Rewe…"}
+              </span>
+            </div>
           ) : position ? (
             <div className="text-sm">
               <span className="font-semibold">Alle Rewes besucht.</span>{" "}
@@ -181,11 +205,15 @@ export function StoreExplorer({
                 <div className="font-semibold">
                   {loggedIn ? "Wo ist dein nächster neuer Rewe?" : "Wo ist der nächste Rewe?"}
                 </div>
-                <div className="text-ink-2">Mit deinem Standort zeigen wir Entfernungen.</div>
+                <div className="text-ink-2">
+                  {blocked
+                    ? "Standortzugriff ist blockiert. Erlaube ihn in den Browser-Einstellungen."
+                    : "Standort nicht gefunden."}
+                </div>
               </div>
-              <Button size="sm" onClick={() => locate()} disabled={locating} className="shrink-0">
+              <Button size="sm" onClick={() => locate()} className="shrink-0">
                 <LocateFixed />
-                {locating ? "Suche…" : "Orten"}
+                Erneut
               </Button>
             </div>
           )}
