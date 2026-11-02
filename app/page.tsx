@@ -25,12 +25,12 @@ export default async function HomePage() {
   const summary = session ? (
     <Link
       href={`/u/${session.user.username}`}
-      className="block space-y-2 rounded-xl border border-line bg-surface p-4 hover:bg-surface-2"
+      className="group block space-y-2 rounded-xl border border-line bg-surface p-4 transition-colors hover:border-baseline"
     >
       <div className="flex items-center justify-between gap-3">
         <div className="text-sm text-ink-2">Hallo {session.user.name}</div>
-        <span className="flex items-center gap-1 text-xs text-muted">
-          Dashboard <ArrowRight className="size-3.5" />
+        <span className="flex items-center gap-1 text-xs text-muted transition-colors group-hover:text-brand">
+          Dashboard <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
         </span>
       </div>
       <div className="flex items-baseline gap-2">
