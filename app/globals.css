@@ -1,0 +1,70 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@theme {
+  --font-sans: system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --color-page: #f9f9f7;
+  --color-surface: #fcfcfb;
+  --color-surface-2: #f0efec;
+  --color-ink: #0b0b0b;
+  --color-ink-2: #52514e;
+  --color-muted: #6f6d68;
+  --color-line: #e1e0d9;
+  --color-baseline: #c3c2b7;
+
+  /* Rewe-ish red for actions; charts use the blue series color instead. */
+  --color-brand: #cc071e;
+  --color-brand-hover: #a80619;
+  --color-brand-soft: #fde8ea;
+
+  --color-series: #2a78d6;
+  --color-star: #eda100;
+  --color-good: #006300;
+  --color-critical: #d03b3b;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --color-page: #0d0d0d;
+    --color-surface: #1a1a19;
+    --color-surface-2: #262624;
+    --color-ink: #f0efec;
+    --color-ink-2: #c3c2b7;
+    --color-muted: #9a988f;
+    --color-line: #2c2c2a;
+    --color-baseline: #383835;
+    --color-brand: #e0283c;
+    --color-brand-hover: #f04256;
+    --color-brand-soft: #3a1418;
+    --color-series: #3987e5;
+    --color-star: #f2b01e;
+    --color-good: #0ca30c;
+  }
+}
+
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background: var(--color-page);
+  color: var(--color-ink);
+}
+
+/* Leaflet sits above page content otherwise. */
+.leaflet-container {
+  z-index: 0;
+  font: inherit;
+}
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background: var(--color-surface);
+  color: var(--color-ink);
+}
+
+.leaflet-popup-content {
+  margin: 12px 14px;
+}

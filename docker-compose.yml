@@ -1,0 +1,19 @@
+services:
+  db:
+    image: postgres:17-alpine
+    container_name: rewe-tracker-db
+    environment:
+      POSTGRES_USER: rewe
+      POSTGRES_PASSWORD: rewe
+      POSTGRES_DB: rewe
+    ports:
+      - "5434:5432"
+    volumes:
+      - rewe-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rewe"]
+      interval: 2s
+      retries: 20
+
+volumes:
+  rewe-db:
