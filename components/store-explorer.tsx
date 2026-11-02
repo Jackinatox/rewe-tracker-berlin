@@ -7,7 +7,7 @@ import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { formatDistance, haversineKm, type LatLng } from "@/lib/geo";
 import { formatRating } from "@/lib/ratings";
-import { cn } from "@/lib/utils";
+import { cn, matchesQuery } from "@/lib/utils";
 import { type MapStore, StoreMap, type StoreStatus } from "./store-map-lazy";
 import { Button, Card, Input, LinkButton, Select } from "./ui";
 
@@ -37,11 +37,11 @@ export function StoreExplorer({
   );
 
   const visible = useMemo(() => {
-    const q = query.trim().toLowerCase();
+    const matches = matchesQuery(query);
     return withDistance
       .filter((s) => !district || s.district === district)
       .filter((s) => filter === "all" || (filter === "visited") === !!statuses[s.id])
-      .filter((s) => !q || `${s.name} ${s.address} ${s.district}`.toLowerCase().includes(q))
+      .filter((s) => matches(s.name, s.address, s.postcode, s.district))
       .sort((a, b) =>
         a.km != null && b.km != null
           ? a.km - b.km

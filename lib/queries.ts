@@ -6,10 +6,11 @@ import { scoreStores } from "./stats";
 import { STORES } from "./stores";
 
 /** Only what the map and list need, to keep the client payload small. */
-export const MAP_STORES: MapStore[] = STORES.map(({ id, name, address, district, lat, lng }) => ({
+export const MAP_STORES: MapStore[] = STORES.map(({ id, name, address, postcode, district, lat, lng }) => ({
   id,
   name,
   address,
+  postcode,
   district,
   lat,
   lng,

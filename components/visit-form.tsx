@@ -7,9 +7,11 @@ import { deleteVisit, discardUpload, saveVisit } from "@/app/actions/visits";
 import type { PhotoInput, PhotoMode } from "@/lib/photos";
 import { CATEGORIES, type CategoryKey, type CategoryScores } from "@/lib/ratings";
 import { uploadPhoto } from "@/lib/upload-client";
+import { DatePicker } from "./date-picker";
 import { StarInput } from "./stars";
 import type { MapStore } from "./store-map";
-import { Button, Card, Input, Label, Select, Textarea } from "./ui";
+import { StorePicker } from "./store-picker";
+import { Button, Card, Label, Textarea } from "./ui";
 
 const MAX_PHOTOS = 6;
 
@@ -108,33 +110,11 @@ export function VisitForm({
       <Card className="space-y-4">
         <div>
           <Label htmlFor="store">Markt</Label>
-          <Select id="store" value={storeId} onChange={(e) => setStoreId(e.target.value)} required>
-            <option value="" disabled>
-              Markt auswählen…
-            </option>
-            {districts.map((d) => (
-              <optgroup key={d} label={d}>
-                {stores
-                  .filter((s) => s.district === d)
-                  .map((s) => (
-                    <option key={s.id} value={s.id}>
-                      {s.name} – {s.address}
-                    </option>
-                  ))}
-              </optgroup>
-            ))}
-          </Select>
+          <StorePicker id="store" stores={stores} districts={districts} value={storeId} onChange={setStoreId} />
         </div>
         <div>
           <Label htmlFor="date">Datum</Label>
-          <Input
-            id="date"
-            type="date"
-            value={visitedAt}
-            max={today}
-            onChange={(e) => setVisitedAt(e.target.value)}
-            required
-          />
+          <DatePicker id="date" value={visitedAt} max={today} onChange={setVisitedAt} />
         </div>
       </Card>
 

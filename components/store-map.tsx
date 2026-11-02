@@ -12,6 +12,7 @@ export interface MapStore {
   id: string;
   name: string;
   address: string;
+  postcode: string;
   district: string;
   lat: number;
   lng: number;

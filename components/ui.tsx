@@ -42,8 +42,12 @@ export function CardTitle({ className, ...props }: ComponentProps<"h2">) {
   return <h2 className={cn("mb-3 text-base font-semibold", className)} {...props} />;
 }
 
-const field =
+export const field =
   "w-full rounded-lg border border-line bg-surface px-3 text-base text-ink placeholder:text-muted focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20";
+
+/** Floating panel for popovers (store picker, date picker). */
+export const popoverContent =
+  "z-50 rounded-xl border border-line bg-surface text-ink shadow-lg outline-none data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95";
 
 export function Input({ className, ...props }: ComponentProps<"input">) {
   return <input className={cn(field, "h-11", className)} {...props} />;
